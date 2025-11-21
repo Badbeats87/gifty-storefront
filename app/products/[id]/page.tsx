@@ -13,6 +13,11 @@ export default function ProductDetail({ params }: { params: { id: string } }) {
 
   // Fetch product from Supabase by ID
   useEffect(() => {
+    if (!params?.id) {
+      setLoading(false);
+      return;
+    }
+
     const fetchProduct = async () => {
       try {
         const foundProduct = await getProductById(params.id);
@@ -35,7 +40,7 @@ export default function ProductDetail({ params }: { params: { id: string } }) {
       }
     };
     fetchProduct();
-  }, [params.id]);
+  }, [params?.id]);
 
   const priceMap: { [key: string]: number } = {
     '25': 25,
