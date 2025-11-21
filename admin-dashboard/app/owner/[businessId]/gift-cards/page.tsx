@@ -3,6 +3,13 @@ import { getServiceSupabase } from '@/lib/supabaseAdmin';
 import { notFound } from 'next/navigation';
 import GiftCardTable from './GiftCardTable';
 
+// Force dynamic rendering to ensure fresh data
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+// Valid gift card statuses
+const VALID_STATUSES = ['issued', 'partially_redeemed', 'redeemed', 'expired', 'all'];
+
 export default async function GiftCardsPage({
   params,
   searchParams,
@@ -21,6 +28,10 @@ export default async function GiftCardsPage({
 
   const supabase = getServiceSupabase();
 
+  // Validate and sanitize input parameters
+  const validStatus = status && VALID_STATUSES.includes(status) ? status : 'all';
+  const sanitizedSearch = search ? String(search).trim().slice(0, 100) : '';
+
   // Build query
   let query = supabase
     .from('gift_cards')
@@ -32,12 +43,12 @@ export default async function GiftCardsPage({
     .order('issued_at', { ascending: false });
 
   // Apply filters
-  if (status && status !== 'all') {
-    query = query.eq('status', status);
+  if (validStatus && validStatus !== 'all') {
+    query = query.eq('status', validStatus);
   }
 
-  if (search) {
-    query = query.ilike('code', `%${search}%`);
+  if (sanitizedSearch) {
+    query = query.ilike('code', `%${sanitizedSearch}%`);
   }
 
   const { data: giftCards, error } = await query;
