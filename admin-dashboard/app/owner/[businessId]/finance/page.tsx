@@ -3,6 +3,10 @@ import { getServiceSupabase } from '@/lib/supabaseAdmin';
 import { notFound } from 'next/navigation';
 import React from 'react';
 
+// Force dynamic rendering to ensure fresh data every time
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 interface Transaction {
   id: string;
   code: string;

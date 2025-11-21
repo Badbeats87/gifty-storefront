@@ -1,6 +1,10 @@
 import { getServiceSupabase } from '@/lib/supabaseAdmin';
 import OrderHistoryFilter from '@/components/OrderHistoryFilter';
 
+// Force dynamic rendering to ensure fresh data every time
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 interface BusinessRevenue {
   business_id: string;
   business_name: string;
