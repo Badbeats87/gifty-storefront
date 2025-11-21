@@ -2,25 +2,27 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { use } from 'react';
 import { useCart } from '@/lib/cart-context';
 import { getProductById } from '@/lib/products';
 
-export default function ProductDetail({ params }: { params: { id: string } }) {
+export default function ProductDetail({ params }: { params: Promise<{ id: string }> }) {
   const { addItem, itemCount } = useCart();
   const [selectedAmount, setSelectedAmount] = useState('50');
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const resolvedParams = use(params);
 
   // Fetch product from Supabase by ID
   useEffect(() => {
-    if (!params?.id) {
+    if (!resolvedParams?.id) {
       setLoading(false);
       return;
     }
 
     const fetchProduct = async () => {
       try {
-        const foundProduct = await getProductById(params.id);
+        const foundProduct = await getProductById(resolvedParams.id);
         if (foundProduct) {
           setProduct({
             id: foundProduct.id,
@@ -40,7 +42,7 @@ export default function ProductDetail({ params }: { params: { id: string } }) {
       }
     };
     fetchProduct();
-  }, [params?.id]);
+  }, [resolvedParams?.id]);
 
   const priceMap: { [key: string]: number } = {
     '25': 25,
