@@ -43,6 +43,7 @@ export default function Navigation() {
     { href: '/', label: 'Dashboard', icon: '📊' },
     { href: '/businesses', label: 'Businesses', icon: '🏢' },
     { href: '/finance', label: 'Finance', icon: '💰' },
+    { href: '/cards', label: 'Cards', icon: '🎫' },
     { href: '/monitoring', label: 'Monitoring', icon: '🔍' },
     { href: '/database', label: 'Database', icon: '🗄️' },
     { href: '/architecture', label: 'Architecture', icon: '📐' },
