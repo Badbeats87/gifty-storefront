@@ -1,11 +1,29 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseServiceKey = process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+let supabaseClient: ReturnType<typeof createClient> | null = null;
 
-// Use service role key for admin dashboard (bypasses RLS)
-// Note: In production, use server-side API routes for better security
-export const supabase = createClient(supabaseUrl, supabaseServiceKey);
+export function getSupabaseClient() {
+  if (!supabaseClient) {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseServiceKey = process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    if (!supabaseUrl || !supabaseServiceKey) {
+      throw new Error('Missing Supabase environment variables');
+    }
+
+    // Use service role key for admin dashboard (bypasses RLS)
+    // Note: In production, use server-side API routes for better security
+    supabaseClient = createClient(supabaseUrl, supabaseServiceKey);
+  }
+
+  return supabaseClient;
+}
+
+export const supabase = new Proxy({} as any, {
+  get(target, prop) {
+    return Reflect.get(getSupabaseClient(), prop);
+  },
+});
 
 // Database types
 export interface GiftCard {

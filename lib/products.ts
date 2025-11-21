@@ -1,4 +1,4 @@
-import { supabase } from './supabase';
+import { getSupabaseClient } from './supabase';
 import type { Database } from './database.types';
 
 type Business = Database['public']['Tables']['businesses']['Row'];
@@ -34,6 +34,7 @@ const getEmojiForBusiness = (name: string): string => {
 
 export async function getProducts(): Promise<Product[]> {
   try {
+    const supabase = getSupabaseClient();
     const { data, error } = await supabase
       .from('businesses')
       .select('*')
@@ -63,6 +64,7 @@ export async function getProducts(): Promise<Product[]> {
 
 export async function getProductById(id: string): Promise<Product | null> {
   try {
+    const supabase = getSupabaseClient();
     const { data, error } = await supabase
       .from('businesses')
       .select('*')
@@ -91,6 +93,7 @@ export async function getProductById(id: string): Promise<Product | null> {
 
 export async function searchProducts(query: string): Promise<Product[]> {
   try {
+    const supabase = getSupabaseClient();
     const { data, error } = await supabase
       .from('businesses')
       .select('*')
