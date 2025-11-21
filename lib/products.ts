@@ -72,14 +72,15 @@ export async function getProductById(id: string): Promise<Product | null> {
       .eq('is_visible', true)
       .single();
 
-    if (error) {
+    if (error || !data) {
       console.error('Error fetching product:', error);
       return null;
     }
 
+    const businessData = data as Business;
     const product: Product = {
-      ...(data as Business),
-      image: getEmojiForBusiness(data.name),
+      ...businessData,
+      image: getEmojiForBusiness(businessData.name),
       rating: 4.8,
       reviews: 324,
     };
