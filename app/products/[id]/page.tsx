@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useCart } from '@/lib/cart-context';
-import { getProducts } from '@/lib/products';
+import { getProductById } from '@/lib/products';
 
 export default function ProductDetail({ params }: { params: { id: string } }) {
   const { addItem, itemCount } = useCart();
@@ -15,16 +15,15 @@ export default function ProductDetail({ params }: { params: { id: string } }) {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const products = await getProducts();
-        const foundProduct = products.find((p: any) => p.id === params.id);
+        const foundProduct = await getProductById(params.id);
         if (foundProduct) {
           setProduct({
             id: foundProduct.id,
             name: foundProduct.name,
-            image: '🍝', // Could be stored in DB
+            image: foundProduct.image,
             category: 'Business',
-            rating: 4.8,
-            reviews: 0,
+            rating: foundProduct.rating,
+            reviews: foundProduct.reviews,
             description: foundProduct.name + ' - Premium Gift Cards',
             amounts: ['25', '50', '100', '150'],
           });
